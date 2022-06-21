@@ -1,0 +1,55 @@
+body{
+    color: white;
+    background-color: black;
+    margin: 10px 10px 40px 40px;
+}
+
+h1{
+    color: aqua;
+}
+
+#header h1{
+    font-size: 30pt;
+}
+
+#header .characteristics{
+    color: blue;
+    text-transform: capitalize;
+    font-family: "Arial Black";
+}
+
+#neighbors .characteristics{
+    font-style: italic;
+}
+
+table{
+    text-align: left;
+}
+
+#classes table thead{
+    background-color: blue;
+}
+#classes table, #classes th, #classes td{
+    border: 1px solid aquamarine;
+}
+
+#moods table td img{
+    height: 300px;
+}
+
+#movies a:link{
+    color: red;
+}
+
+#movies a:focus{
+    color: #ffaa11;
+}
+
+#movies a:visited{
+    color: #ffff11;
+}
+
+#footer img{
+    width: 60px;
+    height: 30px;
+}
