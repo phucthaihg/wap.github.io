@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+
+    <style>
+
+        #container-main {
+            border: 1px solid cadetblue;
+            margin: 10px 20px 30px 20px;
+        }
+
+        #container-top {
+            background-color: cadetblue;
+            padding: 20px;
+        }
+
+        #container-top select {
+            background: transparent;
+            border: none;
+        }
+
+        #container-middle {
+            padding: 20px;
+        }
+
+        #container-details {
+            display: flex;
+        }
+
+        #detail-left, #detail-right {
+            flex: 50%;
+        }
+
+        #detail-left {
+            padding-right: 30px;
+        }
+
+        #detail-right {
+            padding-left: 30px;
+        }
+
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .input {
+            width: 70%;
+        }
+
+        .header {
+            text-decoration: underline;
+        }
+
+        #detail-bottom {
+            background-color: azure;
+            display: flex;
+            justify-content: center;
+        }
+
+        #detail-bottom input {
+            background-color: cadetblue;
+            border: none;
+            height: 35px;
+            width: 100px;
+            margin: 10px;
+        }
+
+        #footer img{
+            width: 60px;
+            height: 30px;
+            margin-bottom: 100px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container-main">
+
+    <div id="container-top">
+        <span class="h2">Workshop registration</span>
+        <select name="MoreActions" id="">
+            <option value="MoreActions">More Actions</option>
+            <option value="ActionB">Action B</option>
+            <option value="ActionC">Action C</option>
+            <option value="ActionC">Action D</option>
+        </select>
+    </div>
+
+    <form action="">
+        <div id="container-middle">
+
+            <p class="header">Register now while seats are available!</p>
+            <div id="container-details">
+                <div id="detail-left">
+                    <div class="input-row">
+                        <span>First Name:</span>
+                        <input type="text" name="firstName" class="input"/>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Last Name:</span>
+                        <input type="text" name="lastName" class="input"/>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Company/Institution:</span>
+                        <input type="text" name="company" class="input"/>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Address:</span>
+                        <textarea name="address" rows="3" class="input"></textarea>
+                    </div>
+
+                    <div class="input-row">
+                        <span>City:</span>
+                        <input type="text" name="city" class="input"/>
+                    </div>
+
+                    <div class="input-row">
+                        <span>State/ Province/ Region:</span>
+                        <select name="state" id="" class="input">
+                            <option value="null">-Select-</option>
+                            <option value="IA">IA</option>
+                            <option value="CA">California</option>
+                            <option value="MD">Maryland</option>
+                        </select>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Country:</span>
+                        <select name="country" id="" class="input">
+                            <option value="null">-Select-</option>
+                            <option value="US">USA</option>
+                            <option value="VN">Viet Nam</option>
+                            <option value="SG">Singapore</option>
+                        </select>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Email:</span>
+                        <input type="text" name="email" class="input"/>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Phone Number:</span>
+                        <input type="text" name="phone" class="input"/>
+                    </div>
+
+                </div>
+
+                <div id="detail-right">
+                    <div class="input-row">
+                        <td><span class="header">Lunch</span></td>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Meal Preference</span>
+                        <select name="meals" id="" class="input">
+                            <option value="veg">Vegetarian</option>
+                            <option value="nonveg">Non-vegetarian</option>
+                        </select>
+                    </div>
+
+                    <div class="input-row">
+                        <span class="header">Payment Details</span>
+                    </div>
+                    <div class="input-row">
+                        <span>Payment Mode</span>
+                        <div class="input">
+                            <input type="checkbox" name="Cash"/>Cash
+                            <input type="checkbox" name="Cheque"/>Cheque
+                            <input type="checkbox" name="DemandDraft"/> Demand Draft
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <span>DD/ Cheque No</span>
+                        <input type="text" name="DDChequeNo" class="input"/>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Drawn On (Bank Name)</span>
+                        <input type="text" name="Bank" class="input"/>
+                    </div>
+
+                    <div class="input-row">
+                        <span>Payable At</span>
+                        <input type="text" name="PayableAt" class="input"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="detail-bottom">
+            <input type="submit" value="Submit"/>
+            <input type="reset" value="Reset"/>
+        </div>
+    </form>
+</div>
+
+<div id="footer">
+    <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fphucthaihg.github.io%2Fwap.github.io%2Faboutme.html"><img src="images/htmlValidator.png" alt="html validator"/></a>
+    <a href="https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fphucthaihg.github.io%2Fwap.github.io%2Faboutme.html&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en"><img src="images/cssValidator.png" alt="css validator"/></a>
+</div>
+
+</body>
+</html>
