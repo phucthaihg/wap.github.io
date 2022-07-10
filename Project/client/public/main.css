@@ -1,0 +1,10 @@
+.thumbnail{
+    max-width: 70px;
+    max-height: 70px;
+}
+
+.quantity{
+    min-width: 30px;
+    max-width: 50px;
+    text-align: center;
+}
