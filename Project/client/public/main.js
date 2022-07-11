@@ -1,118 +1,114 @@
 const host = 'http://localhost:3000/';
-const accessToken = "thai";
 
 window.onload = function (){
-    server_loadAllProducts();
-    server_loadCart();
+
+    switchMode();
+
 };
 
+function switchMode(){
+    if(!sessionStorage.getItem("accessToken")){
+        guestMode();
+    }else{
+        userMode();
+        server_loadAllProducts();
+        server_loadCart();
+    }
+}
+
+function guestMode(){
+    document.getElementById("guestDiv").style.display = "block";
+    document.getElementById("userDiv").style.display = "none";
+    document.getElementById("loginBtn").addEventListener("click", eventClickLogin);
+}
+
+function userMode(){
+    document.getElementById("guestDiv").style.display = "none";
+    document.getElementById("userDiv").style.display = "block";
+    document.getElementById("logoutBtn").addEventListener("click", eventClickLogout);
+}
+
+function eventClickLogin(e){
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let param = {
+        "username": username,
+        "password": password
+    };
+
+    const url = host + 'users/login';
+    const promise = fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(param),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    promise
+        .then(response => response.json())
+        .then(result => {
+            if (result.error) {
+                alert(result.error);
+                guestMode();
+            }else {
+                sessionStorage.setItem("accessToken", result.accessToken);
+                switchMode();
+            }
+        });
+}
+
+function eventClickLogout(e){
+    sessionStorage.removeItem("accessToken");
+    switchMode();
+}
+
 /*
-function server_loadAllProducts(){
-    //fetch an array of products
-    const url = host+'products';
-    const promise = fetch(url);
-    promise
-        .then(response => response.json())
-        .then(products => {
-
-            let table = document.getElementById('productsTbl');
-            products.forEach(prod => {
-                createProductTable();
-
-                /*
-                <tr style="user-select: auto;">
-                    <td id="P0001-ProductName">Macbook Air M2</td>
-                    <td id="P0001-ProductPrice">1500</td>
-                    <td>
-                        <img id="P0001-ProductImage" src="http://localhost:3000/images/macbookairm2.png" alt="img" class="thumbnail">
-                    </td>
-                    <td id="P0001-ProductStock">10</td>
-                    <td>
-                        <button type="button" class="cartBtn btn btn-primary" data-product-id="P0001" style="user-select: auto;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16" style="user-select: auto;">
-                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" style="user-select: auto;"></path>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-
-
-                let row = table.insertRow(-1);
-
-                let cell = row.insertCell(0);
-                cell.id = prod.id+"-ProductName";
-                cell.innerHTML = prod.name;
-
-                cell = row.insertCell(1);
-                cell.id = prod.id+"-ProductPrice";
-                cell.innerHTML = prod.price;
-
-                cell = row.insertCell(2);
-                cell.id = prod.id+"-ProductImage";
-                let src = "http://localhost:3000" + prod.image;
-                cell.innerHTML = `
-                    <img src="${src}" alt="img" class="thumbnail"/>
-                `;
-
-                cell = row.insertCell(3);
-                cell.id = prod.id+"-ProductStock";
-                cell.innerHTML = prod.stock;
-
-                cell = row.insertCell(4);
-                cell.innerHTML = `
-                    <button type="button" class="cartBtn btn" data-product-id="${prod.id}"
-                                          style="user-select: auto;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-cart" viewBox="0 0 16 16" style="user-select: auto;">
-                            <path
-                                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
-                                style="user-select: auto;"></path>
-                        </svg>
-                    </button>
-                `;
-            });
-
-            //add onclick action on cart buttons
-            const cartBtns = Array.prototype.slice.call(document.getElementsByClassName('cartBtn'));
-            cartBtns.forEach(function(cartBtn) {
-                cartBtn.addEventListener('click', eventClickCart );
-            });
-        });
-}
+   fetch an array of products
  */
-
 function server_loadAllProducts(){
+    let accessToken = sessionStorage.getItem("accessToken");
+    console.log("server_loadAllProducts: " + accessToken);
+    if(!accessToken){
+        guestMode();
+    }else {
+        const url = host + 'products';
+        const promise = fetch(url);
+        promise
+            .then(response => response.json())
+            .then(result => {
 
-    //fetch an array of products
-    const url = host+'products';
-    const promise = fetch(url);
-    promise
-        .then(response => response.json())
-        .then(result => {
-
-            if(result.error){
-                alert(result.error);
-                let table = document.getElementById('productsTbl');
-                genProductHeader(table);
-            }else {
-                genProductTable(result);
-            }
-        });
+                if (result.error) {
+                    alert(result.error);
+                    let table = document.getElementById('productsTbl');
+                    genProductHeader(table);
+                } else {
+                    genProductTable(result);
+                }
+            });
+    }
 }
 
+/*
+    fetch user's cart
+ */
 function server_loadCart(){
-    //fetch cart of user
-    const url = host + 'carts/' + accessToken;
-    const promise = fetch(url);
-    promise
-        .then(response => response.json())
-        .then(result => {
-            if(result.error){
-                alert(result.error);
-            }else {
-                genCartTable(result);
-            }
-        });
+    let accessToken = sessionStorage.getItem("accessToken");
+    if(!accessToken){
+        guestMode();
+    }else {
+        const url = host + 'carts/' + accessToken;
+        const promise = fetch(url);
+        promise
+            .then(response => response.json())
+            .then(result => {
+                if (result.error) {
+                    alert(result.error);
+                } else {
+                    genCartTable(result);
+                }
+            });
+    }
 }
 
 function genProductTable(products){
@@ -345,30 +341,45 @@ function validateQuantityAgainstStock(productId, action){
 }
 
 function eventChangeQuantity(e){
-    let productId = e.target.id.split('-')[0];
+    if(!sessionStorage.getItem("accessToken")){
+        guestMode();
+    }else {
+        let productId = e.target.id.split('-')[0];
 
-    let obj = validateQuantityAgainstStock(productId, "change");
-    updateQuantity(obj);
+        let obj = validateQuantityAgainstStock(productId, "change");
+        updateQuantity(obj);
+    }
 }
 
 function eventAddQuantity(e){
-    let productId = e.target.id.split('-')[0];
+    if(!sessionStorage.getItem("accessToken")){
+        guestMode();
+    }else {
+        let productId = e.target.id.split('-')[0];
 
-    let obj = validateQuantityAgainstStock(productId, "add");
-    updateQuantity(obj);
+        let obj = validateQuantityAgainstStock(productId, "add");
+        updateQuantity(obj);
+    }
 }
 
 function eventSubQuantity(e){
-    let productId = e.target.id.split('-')[0];
+    if(!sessionStorage.getItem("accessToken")){
+        guestMode();
+    }else {
+        let productId = e.target.id.split('-')[0];
 
-    let obj = validateQuantityAgainstStock(productId, "sub");
-    updateQuantity(obj);
+        let obj = validateQuantityAgainstStock(productId, "sub");
+        updateQuantity(obj);
+    }
 }
 
-function updateQuantity(obj){
-    if(obj.error){
+function updateQuantity(obj) {
+    let accessToken = sessionStorage.getItem("accessToken");
+    if (!accessToken) {
+        guestMode();
+    } else if (obj.error) {
         alert(obj.error);
-    }else{
+    } else {
         const param = {};
         param.accessToken = accessToken;
         param.item = {};
@@ -379,54 +390,65 @@ function updateQuantity(obj){
 }
 
 function server_updateCart(param) {
-    const url = host + 'carts';
-    const promise = fetch(url, {
-        method: 'PUT',
-        body: JSON.stringify(param),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-
-    promise
-        .then(response => response.json())
-        .then(cart => {
-            if (cart.error) {
-                alert(cart.error);
+    if(!sessionStorage.getItem("accessToken")){
+        guestMode();
+    }else {
+        const url = host + 'carts';
+        const promise = fetch(url, {
+            method: 'PUT',
+            body: JSON.stringify(param),
+            headers: {
+                'Content-Type': 'application/json'
             }
-            genCartTable(cart);
         });
+
+        promise
+            .then(response => response.json())
+            .then(cart => {
+                if (cart.error) {
+                    alert(cart.error);
+                }
+                genCartTable(cart);
+            });
+    }
 }
 
 function eventClickOrder(e){
+    let accessToken = sessionStorage.getItem("accessToken");
+    if(!accessToken){
+        guestMode();
+    }else {
+        const param = {};
+        param.accessToken = accessToken;
 
-    const param = {};
-    param.accessToken = accessToken;
-
-    server_orderCart(param);
-
+        server_orderCart(param);
+    }
 }
 
 function server_orderCart(param) {
-    const url = host + 'carts';
-    const promise = fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(param),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-
-    promise
-        .then(response => response.json())
-        .then(result => {
-            if (result.error) {
-                alert(result.error);
+    if(!sessionStorage.getItem("accessToken")){
+        guestMode();
+    }else {
+        const url = host + 'carts';
+        const promise = fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(param),
+            headers: {
+                'Content-Type': 'application/json'
             }
-
-            genProductTable(result.product);
-            genCartTable(result.cart);
         });
+
+        promise
+            .then(response => response.json())
+            .then(result => {
+                if (result.error) {
+                    alert(result.error);
+                }
+
+                genProductTable(result.product);
+                genCartTable(result.cart);
+            });
+    }
 }
 
 

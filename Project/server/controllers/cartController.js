@@ -3,7 +3,7 @@ const Cart = require('../models/Cart');
 module.exports.getCartByUsername = function(req, res, next){
     let result = {};
 
-    let username = req.params.accessToken;
+    let username = req.params.accessToken.split("-")[0];
     if(!username) {
         result.error = "username not found";
     }else{
@@ -17,7 +17,7 @@ module.exports.updateItemQuantity = function(req, res, next){
 
     let result = {};
 
-    let username = req.body.accessToken;
+    let username = req.body.accessToken.split("-")[0];
     let item = req.body.item;
 
     if(!username || !item) {
@@ -41,7 +41,7 @@ module.exports.placeOrder = function(req, res, next){
 
     let result = {};
 
-    let username = req.body.accessToken;
+    let username = req.body.accessToken.split("-")[0];
 
     if(!username) {
         result.error = "username not found";

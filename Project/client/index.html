@@ -18,10 +18,37 @@
 
 <div id="outside">
     <div id="guestDiv">
-        <div id="guestTop">
-            Username <input id="username" type="text" />
-            Password <input id="password" type="password" />
-            <button id="loginBtn" class="btn btn-primary">Login</button>
+        <div id="guestTop" class=" bg-dark text-white">
+
+                <div>
+                    Logo
+                </div>
+
+                <div class=" text-center">
+
+                    <!--div class="form-outline form-white mb-4">
+                        <input type="text" id="username" placeholder="Username" required/>
+                    </div>
+
+                    <div class="form-outline form-white mb-4">
+                        <input type="password" id="password" placeholder="Password" required/>
+                    </div>
+
+                    <button id="loginBtn" class="btn btn-outline-light btn-lg px-5" type="submit">Login</button-->
+
+                    <div>
+                        <div class="form-item">
+                            <label for="username">Username: </label>
+                            <input id="username" type="text" name="username" class="required" autocomplete="off">
+                        </div>
+                        <div class="form-item">
+                            <label for="password">Password: </label>
+                            <input id="password" type="password" name="password" class="required" autocomplete="off">
+                        </div>
+                    </div>
+                    <button id="btn-login" class="btn btn-primary btn-login">Login</button>
+
+                </div>
         </div>
         <div id="guestMain">
             <p>Welcome to my store</p>

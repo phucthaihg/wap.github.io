@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const productRouter = require('./routers/productRouter');
 const cartRouter = require('./routers/cartRouter');
+const userRouter = require('./routers/userRouter');
 
 const path = require("path");
 
@@ -14,6 +15,7 @@ app.use('/products', productRouter);
 
 app.use('/carts', cartRouter);
 
+app.use('/users', userRouter);
 
 app.listen(3000, () => {console.log(`Server is running on port 3000`)});
 
