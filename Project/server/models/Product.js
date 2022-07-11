@@ -28,9 +28,14 @@ module.exports = class Product{
     static updateStocksAfterOrder(cart){
 
         for(let i = 0; i < cart.items.length; i++){
-            let idx = database.findIndex(prod => prod.id == cart.items[i].id);
-            if(idx >= 0){
-                database[idx].stock += stock;
+            let prodIdx = database.findIndex(prod => prod.id == cart.items[i].id);
+            if(prodIdx >= 0){
+                let product = database[prodIdx];
+
+                let stock = parseInt(product.stock);
+                stock = stock - parseInt(cart.items[i].quantity);
+
+                product.stock = stock;
             }
         }
         return Product.writeToDb();

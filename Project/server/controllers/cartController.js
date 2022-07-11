@@ -23,15 +23,15 @@ module.exports.updateItemQuantity = function(req, res, next){
     if(!username || !item) {
         result.error = "username not found or items not found"
     }else{
-        let obj = Cart.getCartByUsername(username);
-        let cart;
-        if(!obj){
-            cart = new Cart(username, []);
-        }else{
-            cart = new Cart(obj.username, obj.items);
-        }
+        // let obj = Cart.getCartByUsername(username);
+        // let cart;
+        // if(!obj){
+        //     cart = new Cart(username, []);
+        // }else{
+        //     cart = new Cart(obj.username, obj.items);
+        // }
 
-        result = cart.updateItemQuantity(item.productId, item.productQuantity);
+        result = Cart.updateItemQuantity(username, item.productId, item.productQuantity);
     }
 
     res.send(JSON.stringify(result));
