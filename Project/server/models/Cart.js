@@ -54,10 +54,9 @@ module.exports = class Cart{
         if (itemIdx >= 0) {
             //update item in cart
             let item = cart.items[itemIdx];
-
             if (productQuantity == 0) {
                 //remove item from user's cart if quantity = 0
-                item.splice(itemIdx, 1);
+                cart.items.splice(itemIdx, 1);
             } else {
                 //update new quantity & totalPrice
                 item.quantity = productQuantity;
@@ -96,17 +95,21 @@ module.exports = class Cart{
             let cart = database[cartIdx];
 
             //update stock
-            result.product = Product.updateStocksAfterOrder(cart);
+            let products = Product.updateStocksAfterOrder(cart);
+            if(products.error){
+                result = products;
+            }else{
+                result.product = products;
+                //update cart status
+                cart.status = "completed";
 
-            //update cart status
-            cart.status = "completed";
+                //create new empty cart for user
+                cart = new Cart(username, []);
+                database.push(cart);
+                Cart.writeToDb();
 
-            //create new empty cart for user
-            cart = new Cart(username, []);
-            database.push(cart);
-            Cart.writeToDb();
-
-            result.cart = cart;
+                result.cart = cart;
+            }
         }
 
         return result;

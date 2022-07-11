@@ -2,6 +2,8 @@ const host = 'http://localhost:3000/';
 
 window.onload = function (){
 
+    document.getElementById("loginBtn").addEventListener("click", eventClickLogin);
+    document.getElementById("logoutBtn").addEventListener("click", eventClickLogout);
     switchMode();
 
 };
@@ -19,13 +21,14 @@ function switchMode(){
 function guestMode(){
     document.getElementById("guestDiv").style.display = "block";
     document.getElementById("userDiv").style.display = "none";
-    document.getElementById("loginBtn").addEventListener("click", eventClickLogin);
 }
 
 function userMode(){
     document.getElementById("guestDiv").style.display = "none";
     document.getElementById("userDiv").style.display = "block";
-    document.getElementById("logoutBtn").addEventListener("click", eventClickLogout);
+
+    let username = sessionStorage.getItem("accessToken").split("-")[0];
+    document.getElementById("menuMsg").innerHTML = "Welcome, " + username;
 }
 
 function eventClickLogin(e){
@@ -49,7 +52,8 @@ function eventClickLogin(e){
         .then(response => response.json())
         .then(result => {
             if (result.error) {
-                alert(result.error);
+                showAlertMsg(result.error);
+
                 guestMode();
             }else {
                 sessionStorage.setItem("accessToken", result.accessToken);
@@ -79,7 +83,7 @@ function server_loadAllProducts(){
             .then(result => {
 
                 if (result.error) {
-                    alert(result.error);
+                    showAlertMsg(result.error);
                     let table = document.getElementById('productsTbl');
                     genProductHeader(table);
                 } else {
@@ -103,7 +107,7 @@ function server_loadCart(){
             .then(response => response.json())
             .then(result => {
                 if (result.error) {
-                    alert(result.error);
+                    showAlertMsg(result.error);
                 } else {
                     genCartTable(result);
                 }
@@ -135,6 +139,8 @@ function genProductHeader(table) {
     let header = table.createTHead();
 
     let row = header.insertRow(-1);
+    row.className = "table-primary";
+
     let cell = row.insertCell(0);
     cell.innerHTML = "Name";
 
@@ -208,6 +214,8 @@ function genCartHeader(table) {
     let header = table.createTHead();
 
     let row = header.insertRow(-1);
+    row.className = "table-primary";
+
     let cell = row.insertCell(0);
     cell.innerHTML = "Name";
 
@@ -308,35 +316,33 @@ function validateQuantityAgainstStock(productId, action){
 
     let result = {};
     let quantity = 0;
-    const stock = document.getElementById(productId + "-ProductStock").innerHTML;
-    if(stock <= 0){
-        result.error = "stock <= 0";
-    }else {
-        let quantityElem = document.getElementById(productId + "-CartQuantity");
+    let stock = document.getElementById(productId + "-ProductStock").innerHTML;
 
-        if (!quantityElem) {
-            quantity = 1;
-        } else {
-            if(action === 'add') {
-                quantity = parseInt(quantityElem.value) + 1;
-            }else if(action === 'change'){
-                quantity = parseInt(quantityElem.value);
-            }else if(action === 'sub'){
-                quantity = parseInt(quantityElem.value) - 1;
-            }
-        }
-
-        if(quantity > stock) {
-            result.error = "quantity > stock";
-        }
-
-        if(quantity < 0) {
-            result.error = "quantity < 0";
+    let quantityElem = document.getElementById(productId + "-CartQuantity");
+    if (!quantityElem) {
+        quantity = 1;
+    }else{
+        if(action === 'add') {
+            quantity = parseInt(quantityElem.value) + 1;
+        }else if(action === 'change'){
+            quantity = parseInt(quantityElem.value);
+        }else if(action === 'sub'){
+            quantity = parseInt(quantityElem.value) - 1;
         }
     }
 
-    result.productId = productId;
-    result.productQuantity = quantity;
+    if(quantity < 0) {
+        result.error = "quantity < 0";
+    }else if(quantity > stock) {
+        result.error = "quantity > stock";
+    }else if(stock === 0){
+        result.productId = productId;
+        result.productQuantity = 0;
+    }else{
+        result.productId = productId;
+        result.productQuantity = quantity;
+    }
+
     return result;
 }
 
@@ -375,10 +381,9 @@ function eventSubQuantity(e){
 
 function updateQuantity(obj) {
     let accessToken = sessionStorage.getItem("accessToken");
-    if (!accessToken) {
-        guestMode();
-    } else if (obj.error) {
-        alert(obj.error);
+
+    if (obj.error) {
+        showAlertMsg(obj.error);
     } else {
         const param = {};
         param.accessToken = accessToken;
@@ -406,9 +411,10 @@ function server_updateCart(param) {
             .then(response => response.json())
             .then(cart => {
                 if (cart.error) {
-                    alert(cart.error);
+                    showAlertMsg(cart.error);
+                }else {
+                    genCartTable(cart);
                 }
-                genCartTable(cart);
             });
     }
 }
@@ -418,9 +424,9 @@ function eventClickOrder(e){
     if(!accessToken){
         guestMode();
     }else {
+        //validateAllQuantitiesAgainstStocks();
         const param = {};
         param.accessToken = accessToken;
-
         server_orderCart(param);
     }
 }
@@ -442,15 +448,29 @@ function server_orderCart(param) {
             .then(response => response.json())
             .then(result => {
                 if (result.error) {
-                    alert(result.error);
+                    showAlertMsg(result.error);
+                }else {
+                    genProductTable(result.product);
+                    genCartTable(result.cart);
                 }
-
-                genProductTable(result.product);
-                genCartTable(result.cart);
             });
     }
 }
 
+function showAlertMsg(error){
+
+    let msgDiv = document.getElementById("alertMsg");
+    msgDiv.innerHTML = error;
+    msgDiv.style.display = "block";
+
+    setTimeout(hideAlertMsg, 1000);
+}
+
+function hideAlertMsg(){
+    let msgDiv = document.getElementById("alertMsg");
+    msgDiv.innerHTML = "";
+    msgDiv.style.display = "none";
+}
 
 
 

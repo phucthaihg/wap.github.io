@@ -27,6 +27,8 @@ module.exports = class Product{
 
     static updateStocksAfterOrder(cart){
 
+        let result = {};
+
         for(let i = 0; i < cart.items.length; i++){
             let prodIdx = database.findIndex(prod => prod.id == cart.items[i].id);
             if(prodIdx >= 0){
@@ -35,10 +37,20 @@ module.exports = class Product{
                 let stock = parseInt(product.stock);
                 stock = stock - parseInt(cart.items[i].quantity);
 
-                product.stock = stock;
+                if(stock < 0){
+                    result.error = "Quantity > Stock";
+                    break;
+                }else {
+                    product.stock = stock;
+                }
             }
         }
-        return Product.writeToDb();
+
+        if(!result.error) {
+            result = Product.writeToDb();
+        }
+
+        return result;
     }
 
     //read json to db object

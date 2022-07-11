@@ -16,51 +16,46 @@
 </head>
 <body>
 
-<div id="outside">
+<div id="container-main">
     <div id="guestDiv">
-        <div id="guestTop" class=" bg-dark text-white">
+        <div id="guestTop" class="container-top">
+            <div class="menu">
+                <img class="logo" src="public/logo.jpg" alt="logo"/>
 
-                <div>
-                    Logo
-                </div>
-
-                <div class=" text-center">
-
-                    <!--div class="form-outline form-white mb-4">
-                        <input type="text" id="username" placeholder="Username" required/>
-                    </div>
-
-                    <div class="form-outline form-white mb-4">
-                        <input type="password" id="password" placeholder="Password" required/>
-                    </div>
-
-                    <button id="loginBtn" class="btn btn-outline-light btn-lg px-5" type="submit">Login</button-->
-
-                    <div>
-                        <div class="form-item">
-                            <label for="username">Username: </label>
-                            <input id="username" type="text" name="username" class="required" autocomplete="off">
-                        </div>
-                        <div class="form-item">
-                            <label for="password">Password: </label>
-                            <input id="password" type="password" name="password" class="required" autocomplete="off">
-                        </div>
-                    </div>
-                    <button id="btn-login" class="btn btn-primary btn-login">Login</button>
-
-                </div>
+                <span>
+                    <span class="form-item">
+                        <label for="username">Username: </label>
+                        <input id="username" type="text" name="username" class="required" autocomplete="off">
+                    </span>
+                    <span class="form-item">
+                        <label for="password">Password: </label>
+                        <input id="password" type="password" name="password" class="required" autocomplete="off">
+                    </span>
+                    <button id="loginBtn" class="btn btn-primary btn-login">Login</button>
+                </span>
+            </div>
         </div>
-        <div id="guestMain">
-            <p>Welcome to my store</p>
+        <div id="guestMain" class="container-middle">
+            <div id="alertMsgGuest" class="alert alert-danger" role="alert" style="display: none">
+            </div>
+            <div>
+                <p class="h1">Welcome to my store</p>
+            </div>
         </div>
     </div>
 
     <div id="userDiv">
-        <div id="userTop">
-            <span id="topMsg">Welcome</span>
-            <button id="logoutBtn" class="btn btn-primary">Logout</button>
+        <div class="container-top">
+            <div class="menu">
+                <img class="logo" src="public/logo.jpg" alt="logo"/>
+                <span id="menuMsg" class="h2">Welcome</span>
+                <button id="logoutBtn" class="btn btn-primary">Logout</button>
+            </div>
         </div>
-        <div id="userMain">
+        <div class="container-middle">
+            <div id="alertMsg" class="alert alert-danger" role="alert" style=display:none>
+            </div>
+
             <div id="productsDiv">
                 <table class="table" id="productsTbl">
                 </table>
