@@ -14,12 +14,26 @@ module.exports = class Product{
     }
 
     static getProductById(productId){
-        let temp = database.find(prod => prod.id == productId);
-        if(temp){
-            return new Product(temp.id, temp.name, temp.description, temp.price, temp.image, temp.stock);
+        let result = {};
+        let idx = database.findIndex(prod => prod.id == productId);
+        if(idx >= 0){
+            result = database[idx];
         }else{
-            return {};
+            result = {};
         }
+
+        return result;
+    }
+
+    static updateStocksAfterOrder(cart){
+
+        for(let i = 0; i < cart.items.length; i++){
+            let idx = database.findIndex(prod => prod.id == cart.items[i].id);
+            if(idx >= 0){
+                database[idx].stock += stock;
+            }
+        }
+        return Product.writeToDb();
     }
 
     //read json to db object
@@ -32,5 +46,6 @@ module.exports = class Product{
     static writeToDb(){
         const data = JSON.stringify(database);
         fs.writeFileSync(filename, data);
+        return Product.loadFromDb();
     }
 }

@@ -4,7 +4,9 @@ module.exports.getCartByUsername = function(req, res, next){
     let result = {};
 
     let username = req.params.accessToken;
-    if(username) {
+    if(!username) {
+        result.error = "username not found";
+    }else{
         result = Cart.getCartByUsername(username);
     }
 
@@ -12,20 +14,39 @@ module.exports.getCartByUsername = function(req, res, next){
 };
 
 module.exports.updateItemQuantity = function(req, res, next){
-    console.log("====cartController-updateItemQuantity=====");
 
     let result = {};
 
     let username = req.body.accessToken;
     let item = req.body.item;
 
-    if(username && item){
-        let cart = Cart.getCartByUsername(username);
-        if(!cart){
+    if(!username || !item) {
+        result.error = "username not found or items not found"
+    }else{
+        let obj = Cart.getCartByUsername(username);
+        let cart;
+        if(!obj){
             cart = new Cart(username, []);
+        }else{
+            cart = new Cart(obj.username, obj.items);
         }
 
         result = cart.updateItemQuantity(item.productId, item.productQuantity);
+    }
+
+    res.send(JSON.stringify(result));
+};
+
+module.exports.placeOrder = function(req, res, next){
+
+    let result = {};
+
+    let username = req.body.accessToken;
+
+    if(!username) {
+        result.error = "username not found";
+    }else{
+        result = Cart.placeOrder(username);
     }
 
     res.send(JSON.stringify(result));

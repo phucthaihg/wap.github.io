@@ -3,8 +3,9 @@ const path = require('path');
 const Product = require('./Product');
 
 const filename = path.join(__dirname, '..', 'database', 'carts.json');
-//let database = JSON.parse(fs.readFileSync(filename));
-let database = [];
+let database = JSON.parse(fs.readFileSync(filename)).filter(cart => cart.status === "pending");
+//let database = [];
+
 module.exports = class Cart{
     constructor(username, items) {
         this.username = username;
@@ -12,56 +13,87 @@ module.exports = class Cart{
     }
 
     static getCartByUsername(username){
-        let temp = database.find(obj => obj.username === username);
-        if(temp){
-            return new Cart(temp.username, temp.items);
+
+        let result = {};
+        let idx = database.findIndex(cart => cart.username === username);
+        if(idx >= 0){
+            result = database[idx];
         }else{
-            return {};
+            result = {};
         }
+        return result;
     }
 
     updateItemQuantity(productId, productQuantity){
-        console.log("========cart-updateItemQuantity=======");
-
-        let error = "";
         let result = {};
 
-        let item = this.items.find(obj => obj.id == productId);
-        if(item) {
-            item.quantity = productQuantity;
-            item.totalPrice = item.quantity * item.price;
+        let itemIdx = this.items.findIndex(obj => obj.id == productId);
+        if(itemIdx >= 0) {
+            //update item in cart
+            if(productQuantity == 0){
+                this.items.splice(itemIdx, 1);
+            }else {
+                this.items[itemIdx].quantity = productQuantity;
+                this.items[itemIdx].totalPrice = this.items[itemIdx].quantity * this.items[itemIdx].price;
+            }
+            result = this;
         }else {
+            //add item to cart
             let product = Product.getProductById(productId);
             if (!product) {
-                error = "product not found";
-            } else
-                item = {
-                    "id": product.id,
-                    "name": product.name,
-                    "price": product.price,
-                    "quantity": productQuantity,
-                    "totalPrice": product.price * productQuantity
-                };
-            this.items.push(item);
+                result.error = "product not found";
+            } else{
+                this.items.push(
+                    {
+                        "id": product.id,
+                        "name": product.name,
+                        "price": product.price,
+                        "quantity": productQuantity,
+                        "totalPrice": product.price * productQuantity
+                    });
+                result = this;
+            }
         }
 
-        if(error) {
-            return {error: error};
-        }else {
-            //Cart.writeToDb();
-            return this;
+        if(!result.error) {
+            Cart.writeToDb();
         }
+
+        return result;
     }
 
-    // //read json to db object
-    // static loadFromDb(){
-    //     database = JSON.parse(fs.readFileSync(filename));
-    //     return database;
-    // }
+    static placeOrder(username){
+        let result = {};
+
+        let idx = database.find(obj => obj.username === username);
+        if(idx < 0) {
+            result.error = "cart not found";
+        }else{
+            //update stock
+            result.product = Product.updateStocksAfterOrder(database[idx]);
+
+            //update cart status
+            database[idx].status = "completed";
+            Cart.writeToDb();
+
+            result.cart = {};
+        }
+
+        return result;
+    }
+
+    //read json to db object
+    static loadFromDb(){
+        database = JSON.parse(fs.readFileSync(filename)).filter(cart => cart.status === "pending");
+        return database;
+    }
 
     //write whole db object to json
     static writeToDb(){
         const data = JSON.stringify(database);
         fs.writeFileSync(filename, data);
+
+        //load again to refresh database
+        Cart.loadFromDb();
     }
 }
